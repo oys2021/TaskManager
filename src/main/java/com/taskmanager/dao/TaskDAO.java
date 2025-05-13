@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class TaskDAO {
     private static final Logger LOGGER = Logger.getLogger(TaskDAO.class.getName());
 
-    public void addTask(Task task) {
+    public void addTask(Task task) throws SQLException {
         String sql = "INSERT INTO tasks (title, description, due_date, status) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
@@ -33,6 +33,7 @@ public class TaskDAO {
             LOGGER.info("Task added successfully.");
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error adding task to the database.", e);
+            throw new SQLException();
         }
     }
 }

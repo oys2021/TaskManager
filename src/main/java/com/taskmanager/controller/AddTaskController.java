@@ -12,11 +12,10 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 @WebServlet("/add-task")
-public class AddTaskServlet extends HttpServlet {
+public class AddTaskController extends HttpServlet {
 
 
-
-    private static final Logger LOGGER = Logger.getLogger(AddTaskServlet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AddTaskController.class.getName());
     private TaskDAO taskDAO;
 
     @Override
@@ -47,7 +46,7 @@ public class AddTaskServlet extends HttpServlet {
                 status == null || (!status.equals("Pending") && !status.equals("Completed"))) {
 
             request.setAttribute("error", "Please fill all fields correctly.");
-            request.getRequestDispatcher("/WEB-INF/views/add-task-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/add-task.jsp").forward(request, response);
             return;
         }
 
@@ -59,12 +58,22 @@ public class AddTaskServlet extends HttpServlet {
         } catch (IOException ioEx) {
             LOGGER.log(Level.SEVERE, "Servlet error while processing task: " + ioEx.getMessage(), ioEx);
             throw ioEx;
-        } catch (Exception ex) {
+        }
+        catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Network error while processing task: " + ex.getMessage(), ex);
+            request.setAttribute("error", "An unexpected error occurred.Check your network");
+            request.getRequestDispatcher("/WEB-INF/views/add-task.jsp").forward(request, response);
+
+        }
+
+        catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Unexpected error: " + ex.getMessage(), ex);
             request.setAttribute("error", "An unexpected error occurred.");
-            request.getRequestDispatcher("/WEB-INF/views/add-task-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/add-task.jsp").forward(request, response);
         }
 
     }
+
+
 
 }
