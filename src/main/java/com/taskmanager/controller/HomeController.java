@@ -6,7 +6,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/tasks")
-public class HomeServlet extends HttpServlet {
+public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
