@@ -104,9 +104,14 @@
 
                                                 })'> <i class="fas fa-edit"></i>
                                                </button>
-                                        <button class="action-btn delete-btn" onclick="document.getElementById('delete-task-modal').style.display='block'">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+
+                                       <button class="action-btn delete-btn" onclick='openDeleteModal({
+                                           id: "${task.id}",
+                                           title: "${task.title}",
+                                           description: "${task.description}",
+                                           status: "${task.status}",
+                                           dueDate: "${task.dueDate}"
+                                       })'> <i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -228,27 +233,34 @@
         </div>
     </div>
 
-    <!-- Delete Task Modal -->
-    <div id="delete-task-modal" class="modal">
-        <div class="modal-content delete-modal">
-            <div class="modal-header">
-                <h2>Delete Task</h2>
-                <span class="close-btn" onclick="document.getElementById('delete-task-modal').style.display='none'">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p class="delete-message">Are you sure you want to delete this task? This action cannot be undone.</p>
-                <div class="task-preview">
-                    <h3>Update client documentation</h3>
-                    <p><strong>Status:</strong> Pending</p>
-                    <p><strong>Due Date:</strong> May 15, 2025</p>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="document.getElementById('delete-task-modal').style.display='none'">Cancel</button>
-                    <button type="button" class="btn-danger">Delete Task</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   <!-- Delete Task Modal -->
+   <div id="delete-task-modal" class="modal">
+       <div class="modal-content delete-modal">
+           <div class="modal-header">
+               <h2>Delete Task</h2>
+               <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+           </div>
+           <div class="modal-body">
+               <p class="delete-message">Are you sure you want to delete this task? This action cannot be undone.</p>
+               <div class="task-preview">
+                   <h3 id="delete-task-title">Task Title</h3>
+                   <p><strong>Status:</strong> <span id="delete-task-status"></span></p>
+                   <p><strong>Due Date:</strong> <span id="delete-task-due-date"></span></p>
+               </div>
+
+               <form method="post" action="all-tasks">
+                   <input type="hidden" name="action" value="delete">
+                   <input type="hidden" id="delete-task-id" name="id">
+
+                   <div class="form-actions">
+                       <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                       <button type="submit" class="btn-danger">Delete Task</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+
 </body>
 
 <script>
@@ -262,6 +274,22 @@ function openEditModal(task) {
     document.getElementById('edit-task-modal').style.display = 'block';
 }
 </script>
+
+<script>
+function openDeleteModal(task) {
+    document.getElementById('delete-task-id').value = task.id;
+    document.getElementById('delete-task-title').textContent = task.title;
+    document.getElementById('delete-task-status').textContent = task.status;
+    document.getElementById('delete-task-due-date').textContent = task.dueDate;
+
+    document.getElementById('delete-task-modal').style.display = 'block';
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-task-modal').style.display = 'none';
+}
+</script>
+
 
 
 </html>

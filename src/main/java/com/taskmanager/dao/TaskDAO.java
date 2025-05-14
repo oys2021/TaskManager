@@ -89,6 +89,18 @@ public class TaskDAO {
     }
 
 
+    public void deleteTask(int id) {
+        String sql = "DELETE FROM tasks WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error deleting task", e);
+        }
+    }
+
+
 
 
 }

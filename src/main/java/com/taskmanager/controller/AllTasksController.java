@@ -56,6 +56,10 @@ public class AllTasksController extends HttpServlet {
                     updateTask(request, response);
                     break;
 
+                case "delete":
+                    deleteTask(request, response);
+                    break;
+
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action");
             }
@@ -140,6 +144,24 @@ public class AllTasksController extends HttpServlet {
         }
 
     }
+
+
+    private void deleteTask(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        try {
+            taskDAO.deleteTask(id);
+            response.sendRedirect("all-tasks");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error deleting task", e);
+            request.setAttribute("error", "Failed to delete task. Please try again.");
+
+            List<Task> allTasks = taskDAO.getAllTasks();
+            request.setAttribute("tasks", allTasks);
+            request.getRequestDispatcher("/WEB-INF/views/all-tasks.jsp").forward(request, response);
+        }
+    }
+
 
 
 
