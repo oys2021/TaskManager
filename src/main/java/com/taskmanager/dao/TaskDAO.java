@@ -56,10 +56,39 @@ public class TaskDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error getting all tasks", e);
         }
 
         return tasks;
     }
+
+    public void updateTask(Task task) {
+        String sql = "UPDATE tasks SET title=?, description=?, status=?, due_date=? WHERE id=?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, task.getTitle());
+            stmt.setString(2, task.getDescription());
+            stmt.setString(3, task.getStatus());
+
+            java.sql.Date sqlDueDate = null;
+            if (task.getDueDate() != null && !task.getDueDate().isEmpty()) {
+                sqlDueDate = java.sql.Date.valueOf(task.getDueDate());
+            }
+
+            stmt.setDate(4, sqlDueDate);
+            stmt.setInt(5, task.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating tasks", e);
+
+        }
+    }
+
+
+
 
 }

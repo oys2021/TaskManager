@@ -94,9 +94,16 @@
                                     <td><span class="badge ${task.status.toLowerCase().replaceAll(' ', '-')}">${task.status}</span></td>
                                     <td>${task.dueDate}</td>
                                     <td class="actions-cell">
-                                        <button class="action-btn edit-btn" onclick="document.getElementById('edit-task-modal').style.display='block'">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+                                         <button  class="action-btn edit-btn" onclick='openEditModal({
+                                                    id: "${task.id}",
+                                                    title: "${task.title}",
+                                                    description: "${task.description}",
+                                                    status: "${task.status}",
+
+                                                    dueDate: "${task.dueDate}",
+
+                                                })'> <i class="fas fa-edit"></i>
+                                               </button>
                                         <button class="action-btn delete-btn" onclick="document.getElementById('delete-task-modal').style.display='block'">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -175,54 +182,48 @@
                 <span class="close-btn" onclick="document.getElementById('edit-task-modal').style.display='none'">&times;</span>
             </div>
             <div class="modal-body">
-                <form class="task-form">
+                <form class="task-form" method="post" action="all-tasks">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" id="edit-task-id" name="id">
+
                     <div class="form-group">
                         <label for="edit-task-title">Task Title</label>
-                        <input type="text" id="edit-task-title" value="Update client documentation" required>
+                        <input type="text" id="edit-task-title" name="title" required>
                     </div>
+
                     <div class="form-group">
                         <label for="edit-task-description">Description</label>
-                        <textarea id="edit-task-description" rows="3">Update the client documentation with the latest features and changes.</textarea>
+                        <textarea id="edit-task-description" name="description" rows="3"></textarea>
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="edit-task-status">Status</label>
-                            <select id="edit-task-status" required>
-                                <option value="pending" selected>Pending</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-task-priority">Priority</label>
-                            <select id="edit-task-priority" required>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high" selected>High</option>
-                                <option value="critical">Critical</option>
+                            <select id="edit-task-status" name="status" required>
+
+                                  <option value="Pending">Pending</option>
+                                  <option value="Completed">Completed</option>
+
+
                             </select>
                         </div>
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="edit-task-due-date">Due Date</label>
-                            <input type="date" id="edit-task-due-date" value="2025-05-15" required>
+                            <input type="date" id="edit-task-due-date" name="dueDate" required>
                         </div>
-                        <div class="form-group">
-                            <label for="edit-task-assignee">Assigned To</label>
-                            <select id="edit-task-assignee" required>
-                                <option value="john" selected>John Doe</option>
-                                <option value="jane">Jane Smith</option>
-                                <option value="mike">Mike Johnson</option>
-                                <option value="sarah">Sarah Williams</option>
-                            </select>
-                        </div>
+
+
                     </div>
+
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="document.getElementById('edit-task-modal').style.display='none'">Cancel</button>
                         <button type="submit" class="btn-primary">Save Changes</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -249,4 +250,18 @@
         </div>
     </div>
 </body>
+
+<script>
+function openEditModal(task) {
+    document.getElementById('edit-task-id').value = task.id;
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-description').value = task.description;
+    document.getElementById('edit-task-status').value = task.status;
+    document.getElementById('edit-task-due-date').value = task.dueDate;
+
+    document.getElementById('edit-task-modal').style.display = 'block';
+}
+</script>
+
+
 </html>

@@ -8,9 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @WebServlet("/all-tasks")
 public class AllTasksController extends HttpServlet {
@@ -28,6 +30,10 @@ public class AllTasksController extends HttpServlet {
             throws ServletException, IOException {
         try {
             List<Task> allTasks = taskDAO.getAllTasks();
+            List<Task> recentTasks = allTasks.stream()
+                    .sorted(Comparator.comparing(Task::getDueDate).reversed())
+                    .limit(5)
+                    .collect(Collectors.toList());
             request.setAttribute("tasks", allTasks);
             request.getRequestDispatcher("/views/all-tasks.jsp").forward(request, response);
         } catch (Exception e) {
@@ -44,6 +50,10 @@ public class AllTasksController extends HttpServlet {
             switch (action) {
                 case "add":
                     addTask(request, response);
+                    break;
+
+                case "update":
+                    updateTask(request, response);
                     break;
 
                 default:
@@ -98,6 +108,40 @@ public class AllTasksController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/all-tasks.jsp").forward(request, response);
         }
     }
+
+
+    private void updateTask(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String title = request.getParameter("title");
+        String status = request.getParameter("status");
+        String description =request.getParameter("description");
+        String dueDateStr = request.getParameter("dueDate");
+
+
+        Task task = new Task();
+        task.setId(id);
+        task.setTitle(title);
+        task.setStatus(status);
+        task.setDescription(description);
+        task.setDueDate(dueDateStr);
+
+        try {
+            taskDAO.updateTask(task);
+            response.sendRedirect("all-tasks");
+        }catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error updating task", e);
+            request.setAttribute("error", "Failed to update task. Please try again.");
+
+            List<Task> allTasks = taskDAO.getAllTasks();
+            request.setAttribute("tasks", allTasks);
+
+            request.getRequestDispatcher("/WEB-INF/views/all-tasks.jsp").forward(request, response);
+        }
+
+    }
+
+
 
 
 
