@@ -39,9 +39,7 @@
                     <h1>Dashboard</h1>
                     <p>Welcome to your task management dashboard</p>
                 </div>
-                <button class="btn-primary">
-                    <i class="fas fa-plus"></i> New Task
-                </button>
+git
             </header>
 
             <!-- Task Statistics -->

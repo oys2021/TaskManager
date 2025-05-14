@@ -94,12 +94,24 @@
                                     <td><span class="badge ${task.status.toLowerCase().replaceAll(' ', '-')}">${task.status}</span></td>
                                     <td>${task.dueDate}</td>
                                     <td class="actions-cell">
-                                        <button class="action-btn edit-btn" onclick="document.getElementById('edit-task-modal').style.display='block'">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn delete-btn" onclick="document.getElementById('delete-task-modal').style.display='block'">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                         <button  class="action-btn edit-btn" onclick='openEditModal({
+                                                    id: "${task.id}",
+                                                    title: "${task.title}",
+                                                    description: "${task.description}",
+                                                    status: "${task.status}",
+
+                                                    dueDate: "${task.dueDate}",
+
+                                                })'> <i class="fas fa-edit"></i>
+                                               </button>
+
+                                       <button class="action-btn delete-btn" onclick='openDeleteModal({
+                                           id: "${task.id}",
+                                           title: "${task.title}",
+                                           description: "${task.description}",
+                                           status: "${task.status}",
+                                           dueDate: "${task.dueDate}"
+                                       })'> <i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -175,78 +187,109 @@
                 <span class="close-btn" onclick="document.getElementById('edit-task-modal').style.display='none'">&times;</span>
             </div>
             <div class="modal-body">
-                <form class="task-form">
+                <form class="task-form" method="post" action="all-tasks">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" id="edit-task-id" name="id">
+
                     <div class="form-group">
                         <label for="edit-task-title">Task Title</label>
-                        <input type="text" id="edit-task-title" value="Update client documentation" required>
+                        <input type="text" id="edit-task-title" name="title" required>
                     </div>
+
                     <div class="form-group">
                         <label for="edit-task-description">Description</label>
-                        <textarea id="edit-task-description" rows="3">Update the client documentation with the latest features and changes.</textarea>
+                        <textarea id="edit-task-description" name="description" rows="3"></textarea>
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="edit-task-status">Status</label>
-                            <select id="edit-task-status" required>
-                                <option value="pending" selected>Pending</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-task-priority">Priority</label>
-                            <select id="edit-task-priority" required>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high" selected>High</option>
-                                <option value="critical">Critical</option>
+                            <select id="edit-task-status" name="status" required>
+
+                                  <option value="Pending">Pending</option>
+                                  <option value="Completed">Completed</option>
+
+
                             </select>
                         </div>
                     </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="edit-task-due-date">Due Date</label>
-                            <input type="date" id="edit-task-due-date" value="2025-05-15" required>
+                            <input type="date" id="edit-task-due-date" name="dueDate" required>
                         </div>
-                        <div class="form-group">
-                            <label for="edit-task-assignee">Assigned To</label>
-                            <select id="edit-task-assignee" required>
-                                <option value="john" selected>John Doe</option>
-                                <option value="jane">Jane Smith</option>
-                                <option value="mike">Mike Johnson</option>
-                                <option value="sarah">Sarah Williams</option>
-                            </select>
-                        </div>
+
+
                     </div>
+
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="document.getElementById('edit-task-modal').style.display='none'">Cancel</button>
                         <button type="submit" class="btn-primary">Save Changes</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
 
-    <!-- Delete Task Modal -->
-    <div id="delete-task-modal" class="modal">
-        <div class="modal-content delete-modal">
-            <div class="modal-header">
-                <h2>Delete Task</h2>
-                <span class="close-btn" onclick="document.getElementById('delete-task-modal').style.display='none'">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p class="delete-message">Are you sure you want to delete this task? This action cannot be undone.</p>
-                <div class="task-preview">
-                    <h3>Update client documentation</h3>
-                    <p><strong>Status:</strong> Pending</p>
-                    <p><strong>Due Date:</strong> May 15, 2025</p>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="document.getElementById('delete-task-modal').style.display='none'">Cancel</button>
-                    <button type="button" class="btn-danger">Delete Task</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   <!-- Delete Task Modal -->
+   <div id="delete-task-modal" class="modal">
+       <div class="modal-content delete-modal">
+           <div class="modal-header">
+               <h2>Delete Task</h2>
+               <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+           </div>
+           <div class="modal-body">
+               <p class="delete-message">Are you sure you want to delete this task? This action cannot be undone.</p>
+               <div class="task-preview">
+                   <h3 id="delete-task-title">Task Title</h3>
+                   <p><strong>Status:</strong> <span id="delete-task-status"></span></p>
+                   <p><strong>Due Date:</strong> <span id="delete-task-due-date"></span></p>
+               </div>
+
+               <form method="post" action="all-tasks">
+                   <input type="hidden" name="action" value="delete">
+                   <input type="hidden" id="delete-task-id" name="id">
+
+                   <div class="form-actions">
+                       <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                       <button type="submit" class="btn-danger">Delete Task</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+
 </body>
+
+<script>
+function openEditModal(task) {
+    document.getElementById('edit-task-id').value = task.id;
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-description').value = task.description;
+    document.getElementById('edit-task-status').value = task.status;
+    document.getElementById('edit-task-due-date').value = task.dueDate;
+
+    document.getElementById('edit-task-modal').style.display = 'block';
+}
+</script>
+
+<script>
+function openDeleteModal(task) {
+    document.getElementById('delete-task-id').value = task.id;
+    document.getElementById('delete-task-title').textContent = task.title;
+    document.getElementById('delete-task-status').textContent = task.status;
+    document.getElementById('delete-task-due-date').textContent = task.dueDate;
+
+    document.getElementById('delete-task-modal').style.display = 'block';
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-task-modal').style.display = 'none';
+}
+</script>
+
+
+
 </html>
