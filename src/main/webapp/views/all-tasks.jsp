@@ -43,53 +43,42 @@
                 </button>
             </header>
 
-            <form method="get" action="all-tasks" class="filter-sort-form">
-                <label for="statusFilter">Filter by Status:</label>
-                <select name="status" id="statusFilter">
-                    <option value="">All</option>
-                    <option value="Pending" ${param.status == 'Pending' ? 'selected' : ''}>Pending</option>
-                    <option value="Completed" ${param.status == 'Completed' ? 'selected' : ''}>Completed</option>
-                </select>
+            <!-- Updated Filter Form in your JSP -->
+            <form method="get" action="all-tasks" class="advanced-filter-form">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="statusFilter">Status</label>
+                        <div class="select-wrapper">
+                            <select name="status" id="statusFilter" class="modern-select">
+                                <option value="">All Statuses</option>
+                                <option value="Pending" ${param.status == 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Completed" ${param.status == 'Completed' ? 'selected' : ''}>Completed</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
 
-                <label for="sortOrder">Sort by Due Date:</label>
-                <select name="sort" id="sortOrder">
-                    <option value="asc" ${param.sort == 'asc' ? 'selected' : ''}>Ascending</option>
-                    <option value="desc" ${param.sort == 'desc' ? 'selected' : ''}>Descending</option>
-                </select>
+                    <div class="filter-group">
+                        <label for="sortOrder">Sort By</label>
+                        <div class="select-wrapper">
+                            <select name="sort" id="sortOrder" class="modern-select">
+                                <option value="asc" ${param.sort == 'asc' ? 'selected' : ''}>Due Date (Ascending)</option>
+                                <option value="desc" ${param.sort == 'desc' ? 'selected' : ''}>Due Date (Descending)</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn-primary">Apply</button>
+                    <div class="filter-group">
+                        <button type="submit" class="filter-button">
+                            <i class="fas fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
             </form>
 
 
-            <!-- Task Filters -->
-            <div class="filters-container">
-                <div class="filter-group">
-                    <label for="status-filter">Status:</label>
-                    <select id="status-filter" class="filter-select">
-                        <option value="all">All</option>
-                        <option value="pending">Pending</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="priority-filter">Priority:</label>
-                    <select id="priority-filter" class="filter-select">
-                        <option value="all">All</option>
-                        <option value="critical">Critical</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="search">Search:</label>
-                    <div class="search-input">
-                        <input type="text" id="search" placeholder="Search tasks...">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-            </div>
 
             <!-- All Tasks Table -->
             <div class="tasks-container">

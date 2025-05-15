@@ -36,18 +36,32 @@ public class AllTasksController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Task> allTasks = taskDAO.getAllTasks();
-            List<Task> recentTasks = allTasks.stream()
-                    .sorted(Comparator.comparing(Task::getDueDate).reversed())
-                    .limit(5)
-                    .collect(Collectors.toList());
-            request.setAttribute("tasks", allTasks);
+            String statusFilter = request.getParameter("status");
+            String sortOrder = request.getParameter("sort");
+
+            List<Task> tasks = taskDAO.getAllTasks();
+
+            if (statusFilter != null && !statusFilter.isEmpty()) {
+                tasks = tasks.stream()
+                        .filter(task -> statusFilter.equalsIgnoreCase(task.getStatus()))
+                        .collect(Collectors.toList());
+            }
+
+            if ("asc".equalsIgnoreCase(sortOrder)) {
+                tasks.sort(Comparator.comparing(Task::getDueDate));
+            } else if ("desc".equalsIgnoreCase(sortOrder)) {
+                tasks.sort(Comparator.comparing(Task::getDueDate).reversed());
+            }
+
+            request.setAttribute("tasks", tasks);
             request.getRequestDispatcher("/views/all-tasks.jsp").forward(request, response);
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error fetching tasks", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to load tasks.");
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -76,7 +90,7 @@ public class AllTasksController extends HttpServlet {
     }
 
     private void addTask(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
 
         String title = request.getParameter("title");
         String description = request.getParameter("description");

@@ -37,51 +37,9 @@ public class TaskDAO {
         }
     }
 
-    public List<Task> getAllTasks(String statusFilter, String sortOrder) throws SQLException {
-        List<Task> tasks = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM tasks");
-
-        List<Object> params = new ArrayList<>();
-
-        if (statusFilter != null && !statusFilter.isEmpty()) {
-            sql.append(" WHERE status = ?");
-            params.add(statusFilter);
-        }
-
-        if ("asc".equalsIgnoreCase(sortOrder)) {
-            sql.append(" ORDER BY due_date ASC");
-        } else if ("desc".equalsIgnoreCase(sortOrder)) {
-            sql.append(" ORDER BY due_date DESC");
-        }
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
-
-            for (int i = 0; i < params.size(); i++) {
-                stmt.setObject(i + 1, params.get(i));
-            }
-
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Task task = new Task();
-                task.setId(rs.getInt("id"));
-                task.setTitle(rs.getString("title"));
-                task.setDescription(rs.getString("description"));
-                task.setStatus(rs.getString("status"));
-                task.setDueDate(rs.getDate("due_date").toString());
-
-                tasks.add(task);
-            }
-        }
-
-        catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getting all tasks", e);
-        }
-        return tasks;
-    }
 
 
-    public List<Task> getAllTasks() {
+    public List<Task> getAllTasks() throws SQLException {
         List<Task> tasks = new ArrayList<>();
         String sql = "SELECT * FROM tasks ORDER BY id DESC";
 
@@ -99,12 +57,11 @@ public class TaskDAO {
                 tasks.add(task);
             }
 
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getting all tasks", e);
         }
 
         return tasks;
     }
+
 
     public void updateTask(Task task) {
         String sql = "UPDATE tasks SET title=?, description=?, status=?, due_date=? WHERE id=?";
