@@ -43,6 +43,24 @@
                 </button>
             </header>
 
+            <form method="get" action="all-tasks" class="filter-sort-form">
+                <label for="statusFilter">Filter by Status:</label>
+                <select name="status" id="statusFilter">
+                    <option value="">All</option>
+                    <option value="Pending" ${param.status == 'Pending' ? 'selected' : ''}>Pending</option>
+                    <option value="Completed" ${param.status == 'Completed' ? 'selected' : ''}>Completed</option>
+                </select>
+
+                <label for="sortOrder">Sort by Due Date:</label>
+                <select name="sort" id="sortOrder">
+                    <option value="asc" ${param.sort == 'asc' ? 'selected' : ''}>Ascending</option>
+                    <option value="desc" ${param.sort == 'desc' ? 'selected' : ''}>Descending</option>
+                </select>
+
+                <button type="submit" class="btn-primary">Apply</button>
+            </form>
+
+
             <!-- Task Filters -->
             <div class="filters-container">
                 <div class="filter-group">

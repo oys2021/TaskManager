@@ -25,6 +25,13 @@ public class AllTasksController extends HttpServlet {
         taskDAO = new TaskDAO();
     }
 
+    public void setTaskDAO(TaskDAO taskDAO) {
+        this.taskDAO = taskDAO;
+    }
+
+
+
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
