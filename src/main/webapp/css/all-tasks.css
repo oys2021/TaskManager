@@ -1,4 +1,4 @@
-/* Task Filters */
+
 .filters-container {
     display: flex;
     flex-wrap: wrap;
@@ -316,6 +316,76 @@
 .task-preview p {
     font-size: 0.9rem;
     margin-bottom: 5px;
+}
+
+/* Horizontal Filter Form */
+.advanced-filter-form {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-auto-flow: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+}
+
+.filter-group label {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.select-wrapper {
+    position: relative;
+    min-width: 180px;
+}
+
+.modern-select {
+    width: 100%;
+    padding: 0.75rem 2rem 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    appearance: none;
+    background-color: white;
+    font-size: 0.875rem;
+    color: #1a202c;
+}
+
+/* Keep existing select styles and button styles */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+        grid-auto-flow: row;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .select-wrapper {
+        min-width: 100%;
+    }
+
+    .filter-button {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Responsive Adjustments */
