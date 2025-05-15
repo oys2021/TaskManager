@@ -39,7 +39,7 @@
                     <h1>Dashboard</h1>
                     <p>Welcome to your task management dashboard</p>
                 </div>
-git
+
             </header>
 
             <!-- Task Statistics -->
